@@ -1,0 +1,90 @@
+Tugas 13
+
+
+Buat ulang procedure penilaian(). Stored procedure penilaian() nantinya menerima 1 buah parameter berupa kode nim mahasiswa. Berdasarkan kode nim ini, cari nilai IP semester_1 dari mahasiswa tersebut. Hasil akhir dari procedure penilaian() berupa string, tergantung nilai IP semester_1 dari mahasiswa tersebut.
+
+
+Aturannya adalah sebagai berikut:
+
+IPK 0.00 - 1.00: ‘Serius kuliah g sih?’
+IPK 1.01 - 2.00: ‘Kebanyakan main’
+IPK 2.01 - 3.00: ‘Berusaha lagi’
+IPK 3.01 - 4.00: ‘Mantap, pertahankan!’
+Selain itu: ‘Nilai tidak sesuai’
+
+Berikut hasil akhir yang diinginkan dari pemanggilan stored procedure penilaian():
+
+
+CALL penilaian('17080305');
+-- Mantap, pertahankan!
+
+
+CALL penilaian('17140143');
+-- Berusaha lagi
+
+
+Silahkan teman-teman coba rancang kode programnya!
+
+
+Tips: 
+
+Membuat procedure ini butuh beberapa langkah:
+
+1. Ambil nilai argumen yang berupa nim lalu input ke dalam SELECT...WHERE untuk mencari nilai semester_1 dari mahasiswa tersebut.
+
+2. Siapkan sebuah variabel untuk menampung nilai semester_1 hasil dari langkah nomor 1.
+
+3. Buat kondisi IF ELSEIF ELSE atau CASE puntuk mengkonversi nilai semester_1 menjadi string dengan aturan di dalam soal.
+
+
+
+
+
+
+
+
+
+JAWABAN :
+
+
+MariaDB [tugas_13_database]> DELIMITER //
+MariaDB [tugas_13_database]> CREATE PROCEDURE penilaian(nim_mahasiwa CHAR(8))
+    -> BEGIN
+    -> DECLARE ipk DECIMAL(4,2);
+    -> SET ipk = (SELECT semester_1 FROM nilai_mahasiswa WHERE nim=nim_mahasiwa);
+    -> IF ipk BETWEEN 0.00 AND 1.00 THEN
+    -> SELECT 'Serius kuliah g sih?';
+    -> ELSEIF ipk BETWEEN 1.01 AND 2.00 THEN
+    -> SELECT 'Kebanyakan main';
+    -> ELSEIF ipk BETWEEN 2.01 AND 3.00 THEN
+    -> SELECT 'Berusaha lagi';
+    -> ELSEIF ipk BETWEEN 3.01 AND 4.00 THEN
+    -> SELECT 'Mantap, pertahankan!';
+    -> ELSE
+    -> SELECT 'Nilai tidak sesuai';
+    -> END IF;
+    -> END //
+Query OK, 0 rows affected (0.014 sec)
+
+MariaDB [tugas_13_database]> DELIMITER ;
+MariaDB [tugas_13_database]> CALL penilaian('17080305');
++----------------------+
+| Mantap, pertahankan! |
++----------------------+
+| Mantap, pertahankan! |
++----------------------+
+1 row in set (0.001 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+MariaDB [tugas_13_database]> CALL penilaian('17140143');
++---------------+
+| Berusaha lagi |
++---------------+
+| Berusaha lagi |
++---------------+
+1 row in set (0.000 sec)
+
+Query OK, 0 rows affected (0.002 sec)
+
+MariaDB [tugas_13_database]>
